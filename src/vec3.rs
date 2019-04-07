@@ -1,6 +1,6 @@
 use std::ops::{Add, Sub, Mul, Div, AddAssign, Index, IndexMut, Neg};
 
-#[derive(PartialEq, Debug)]
+#[derive(Debug, PartialEq, Clone, Copy)]
 pub struct Vec3 {
     e: [f32; 3]
 }
@@ -56,9 +56,21 @@ impl Mul<f32> for Vec3 {
     type Output = Vec3;
 
     fn mul(self, rhs: f32) -> Self::Output {
-        Vec3::new(self[0] * rhs,
+        Vec3::new(
+            self[0] * rhs,
         self[1] * rhs,
         self[2] * rhs)
+    }
+}
+
+impl Mul<Vec3> for f32 {
+    type Output = Vec3;
+
+    fn mul(self, rhs: Vec3) -> Self::Output {
+        Vec3::new(
+            self * rhs[0],
+            self * rhs[1],
+            self * rhs[2])
     }
 }
 
@@ -114,6 +126,10 @@ impl Vec3 {
             a[1] * b[2] - a[2] * b[1],
             -(a[0] * b[2] - a[2] * b[0]),
             a[0] * b[1] - a[1] * b[0])
+    }
+
+    pub fn lerp(a: Vec3, b: Vec3, t: f32) -> Vec3 {
+        (1.0 - t) * a + t * b
     }
 
     pub fn x(&self) -> f32 {
