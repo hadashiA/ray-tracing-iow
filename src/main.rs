@@ -1,25 +1,5 @@
-use ray_tracing_iow::{Vec3, Ray};
-
-pub struct Sphere {
-    pub center: Vec3,
-    pub radius: f32,
-}
-
-impl Sphere {
-    pub fn hit_test(&self, ray: &Ray) -> Option<f32> {
-        let diff = ray.origin - self.center;
-        let a = Vec3::dot(&ray.direction, &ray.direction);
-        let b = 2.0 * Vec3::dot(&diff, &ray.direction);
-        let c = Vec3::dot(&diff, &diff) - self.radius * self.radius;
-
-        let discriminant = b * b - 4.0 * a * c;
-        if discriminant < 0.0 {
-            None
-        } else {
-            Some((-b - discriminant.sqrt()) / (2.0 * a))
-        }
-    }
-}
+use std::f32;
+use ray_tracing_iow::*;
 
 fn color(ray: &Ray) -> Vec3 {
     let sphere = Sphere {
@@ -27,12 +7,11 @@ fn color(ray: &Ray) -> Vec3 {
         radius: 0.5
     };
 
-    let t = sphere.hit_test(ray);
+    let hit = sphere.hit(ray, 0.0, f32::MAX);
 
-    match t {
-        Some(t) => {
-            let normal = (ray.point_at(t) - sphere.center).normalized();
-            Vec3::new(normal.x() + 1.0,normal.y() + 1.0,normal.z() + 1.0) * 0.5
+    match hit {
+        Some(hit) => {
+            Vec3::new(hit.normal.x() + 1.0,hit.normal.y() + 1.0,hit.normal.z() + 1.0) * 0.5
         },
         None => {
             let dir = ray.direction.normalized();

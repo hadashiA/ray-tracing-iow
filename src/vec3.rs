@@ -164,11 +164,6 @@ impl Vec3 {
         self.length_squared().sqrt()
     }
 
-    pub fn unit(&self) -> Vec3 {
-        let l = self.length();
-        *self / l
-    }
-
     pub fn normalized(&self) -> Vec3 {
         *self / self.length()
     }
