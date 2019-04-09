@@ -170,8 +170,7 @@ impl Vec3 {
     }
 
     pub fn normalized(&self) -> Vec3 {
-        let k = 1.0 / self.length();
-        *self * k
+        *self / self.length()
     }
 }
 

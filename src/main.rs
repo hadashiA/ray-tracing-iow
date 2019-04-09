@@ -1,26 +1,48 @@
 use ray_tracing_iow::{Vec3, Ray};
 
-fn color(ray: &Ray) -> Vec3 {
-    if hit_test_sphere(&Vec3::new(0.0, 0.0, -1.0), 0.5, ray) {
-        return Vec3::new(1.0, 0.0, 0.0)
-    }
-
-    let dir = ray.direction.normalized();
-    let t = 0.5 * (dir.y() + 1.0);
-
-    let white = Vec3::new(1.0, 1.0, 1.0);
-    let blue = Vec3::new(0.5, 0.7, 1.0);
-    Vec3::lerp(white, blue, t)
+pub struct Sphere {
+    pub center: Vec3,
+    pub radius: f32,
 }
 
-fn hit_test_sphere(center: &Vec3, radius: f32, ray: &Ray) -> bool {
-    let diff = ray.origin - *center;
-    let a = Vec3::dot(&ray.direction, &ray.direction);
-    let b = 2.0 * Vec3::dot(&diff, &ray.direction);
-    let c = Vec3::dot(&diff, &diff) - radius * radius;
+impl Sphere {
+    pub fn hit_test(&self, ray: &Ray) -> Option<f32> {
+        let diff = ray.origin - self.center;
+        let a = Vec3::dot(&ray.direction, &ray.direction);
+        let b = 2.0 * Vec3::dot(&diff, &ray.direction);
+        let c = Vec3::dot(&diff, &diff) - self.radius * self.radius;
 
-    let discriminant = b * b - 4.0 * a * c;
-    discriminant >= 0.0
+        let discriminant = b * b - 4.0 * a * c;
+        if discriminant < 0.0 {
+            None
+        } else {
+            Some((-b - discriminant.sqrt()) / (2.0 * a))
+        }
+    }
+}
+
+fn color(ray: &Ray) -> Vec3 {
+    let sphere = Sphere {
+        center: Vec3::new(0.0, 0.0, -1.0),
+        radius: 0.5
+    };
+
+    let t = sphere.hit_test(ray);
+
+    match t {
+        Some(t) => {
+            let normal = (ray.point_at(t) - sphere.center).normalized();
+            Vec3::new(normal.x() + 1.0,normal.y() + 1.0,normal.z() + 1.0) * 0.5
+        },
+        None => {
+            let dir = ray.direction.normalized();
+            let t = 0.5 * (dir.y() + 1.0);
+
+            let white = Vec3::new(1.0, 1.0, 1.0);
+            let blue = Vec3::new(0.5, 0.7, 1.0);
+            Vec3::lerp(white, blue, t)
+        }
+    }
 }
 
 fn main() {
