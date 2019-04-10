@@ -1,13 +1,8 @@
 use std::f32;
 use ray_tracing_iow::*;
 
-fn color(ray: &Ray) -> Vec3 {
-    let sphere = Sphere {
-        center: Vec3::new(0.0, 0.0, -1.0),
-        radius: 0.5
-    };
-
-    let hit = sphere.hit(ray, 0.0, f32::MAX);
+fn color<T: Hittable>(ray: &Ray, world: &T) -> Vec3 {
+    let hit = world.hit(ray, 0.0, f32::MAX);
 
     match hit {
         Some(hit) => {
@@ -33,6 +28,17 @@ fn main() {
     let vertical = Vec3::new(0.0, 2.0, 0.0);
     let origin = Vec3::new(0.0, 0.0, 0.0);
 
+    let world = HittableList::new(vec![
+        Box::new(Sphere {
+            center: Vec3::new(0.0, 0.0, -1.0),
+            radius: 0.5,
+        }),
+        Box::new(Sphere {
+            center: Vec3::new(0.0, -100.5, -1.0),
+            radius: 100.0,
+        })
+    ]);
+
     println!("P3\n{} {}\n255", w, h);
 
     for y in (0..h).rev() {
@@ -45,7 +51,7 @@ fn main() {
                 direction: bottom_left + u * horizontal + v * vertical
             };
 
-            let col = color(&ray);
+            let col = color(&ray, &world);
             let r = (col.r() * 255.99) as u32;
             let g = (col.g() * 255.99) as u32;
             let b = (col.b() * 255.99) as u32;
