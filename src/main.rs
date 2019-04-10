@@ -1,4 +1,7 @@
+extern crate rand;
+
 use std::f32;
+use rand::Rng;
 use ray_tracing_iow::*;
 
 fn color<T: Hittable>(ray: &Ray, world: &T) -> Vec3 {
@@ -22,6 +25,9 @@ fn color<T: Hittable>(ray: &Ray, world: &T) -> Vec3 {
 fn main() {
     let w = 200;
     let h = 100;
+    let samplings = 100;
+
+    let mut rng = rand::thread_rng();
 
     let camera = Camera::new(
         Vec3::new(0.0, 0.0, 0.0),
@@ -43,13 +49,21 @@ fn main() {
     println!("P3\n{} {}\n255", w, h);
 
     for y in (0..h).rev() {
-        let v = y as f32 / h as f32;
 
         for x in 0..w {
             let u = x as f32 / w as f32;
-            let ray = camera.create_ray(u, v);
+            let v = y as f32 / h as f32;
 
-            let col = color(&ray, &world);
+            let mut col = Vec3::new(0.0, 0.0, 0.0);
+            for i in 0..samplings {
+                let u = u + rng.gen::<f32>() / w as f32;
+                let v = v + rng.gen::<f32>() / h as f32;
+                let ray = camera.create_ray(u, v);
+                col += color(&ray, &world);
+            }
+
+            col = col / samplings as f32;
+
             let r = (col.r() * 255.99) as u32;
             let g = (col.g() * 255.99) as u32;
             let b = (col.b() * 255.99) as u32;

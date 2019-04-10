@@ -5,3 +5,4 @@ authors = ["hadashiA <dev@hadashikick.jp>"]
 edition = "2018"
 
 [dependencies]
+rand = "*"
