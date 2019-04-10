@@ -23,10 +23,11 @@ fn main() {
     let w = 200;
     let h = 100;
 
-    let bottom_left = Vec3::new(-2.0, -1.0, -1.0);
-    let horizontal = Vec3::new(4.0, 0.0, 0.0);
-    let vertical = Vec3::new(0.0, 2.0, 0.0);
-    let origin = Vec3::new(0.0, 0.0, 0.0);
+    let camera = Camera::new(
+        Vec3::new(0.0, 0.0, 0.0),
+        Vec3::new(-2.0, -1.0, -1.0),
+        4.0,
+        2.0);
 
     let world = HittableList::new(vec![
         Box::new(Sphere {
@@ -46,10 +47,7 @@ fn main() {
 
         for x in 0..w {
             let u = x as f32 / w as f32;
-            let ray = Ray {
-                origin,
-                direction: bottom_left + u * horizontal + v * vertical
-            };
+            let ray = camera.create_ray(u, v);
 
             let col = color(&ray, &world);
             let r = (col.r() * 255.99) as u32;
