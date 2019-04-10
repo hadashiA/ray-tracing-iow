@@ -30,7 +30,7 @@ impl Hittable for Sphere {
         }
 
         // 大きい方の解
-        let t = (-b + discriminant_sqrt / a2);
+        let t = -b + discriminant_sqrt / a2;
         if t_min <= t && t <= t_max {
             let p = ray.point_at(t);
             let normal = (p - self.center).normalized();

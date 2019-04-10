@@ -1,6 +1,8 @@
 mod sphere;
+mod hittable_list;
 
 pub use sphere::Sphere;
+pub use hittable_list::HittableList;
 
 use super::{Vec3, Ray};
 
