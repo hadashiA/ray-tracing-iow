@@ -9,7 +9,12 @@ fn color<T: Hittable>(ray: &Ray, world: &T) -> Vec3 {
 
     match hit {
         Some(hit) => {
-            Vec3::new(hit.normal.x() + 1.0,hit.normal.y() + 1.0,hit.normal.z() + 1.0) * 0.5
+            let reflection_target = hit.p + hit.normal + Sphere::random_in_unit();
+            let reflection_ray = Ray {
+                origin: hit.p,
+                direction: reflection_target - hit.p,
+            };
+            color(&reflection_ray, world) * 0.5
         },
         None => {
             let dir = ray.direction.normalized();
@@ -55,7 +60,7 @@ fn main() {
             let v = y as f32 / h as f32;
 
             let mut col = Vec3::new(0.0, 0.0, 0.0);
-            for i in 0..samplings {
+            for _ in 0..samplings {
                 let u = u + rng.gen::<f32>() / w as f32;
                 let v = v + rng.gen::<f32>() / h as f32;
                 let ray = camera.create_ray(u, v);
