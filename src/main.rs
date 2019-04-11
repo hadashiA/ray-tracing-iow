@@ -5,7 +5,7 @@ use rand::Rng;
 use ray_tracing_iow::*;
 
 fn color<T: Hittable>(ray: &Ray, world: &T) -> Vec3 {
-    let hit = world.hit(ray, 0.0, f32::MAX);
+    let hit = world.hit(ray, 0.001, f32::MAX);
 
     match hit {
         Some(hit) => {
@@ -17,6 +17,7 @@ fn color<T: Hittable>(ray: &Ray, world: &T) -> Vec3 {
             color(&reflection_ray, world) * 0.5
         },
         None => {
+            // ヒットしなくなったら、空の色を描いておしまい
             let dir = ray.direction.normalized();
             let t = 0.5 * (dir.y() + 1.0);
 
@@ -28,8 +29,8 @@ fn color<T: Hittable>(ray: &Ray, world: &T) -> Vec3 {
 }
 
 fn main() {
-    let w = 200;
-    let h = 100;
+    let w = 400;
+    let h = 200;
     let samplings = 100;
 
     let mut rng = rand::thread_rng();
@@ -69,6 +70,7 @@ fn main() {
 
             col = col / samplings as f32;
 
+            // sqrt はガンマ補正
             let r = (col.r() * 255.99) as u32;
             let g = (col.g() * 255.99) as u32;
             let b = (col.b() * 255.99) as u32;
