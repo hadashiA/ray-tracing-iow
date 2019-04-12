@@ -5,12 +5,14 @@ pub use sphere::Sphere;
 pub use hittable_list::HittableList;
 
 use super::{Vec3, Ray};
+use super::material::Material;
 
-#[derive(Debug, Copy, Clone)]
-pub struct Hit {
+#[derive(Copy, Clone)]
+pub struct Hit<'a> {
     pub t: f32,
     pub p: Vec3,
     pub normal: Vec3,
+    pub material: &'a Material,
 }
 
 pub trait Hittable {

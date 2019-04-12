@@ -46,9 +46,9 @@ impl Mul for Vec3 {
 
     fn mul(self, rhs: Self) -> Self::Output {
         Vec3::new(
-            self[0] * rhs[1],
-            self[1] * rhs[2],
-            self[2] * rhs[3])
+            self[0] * rhs[0],
+            self[1] * rhs[1],
+            self[2] * rhs[2])
     }
 }
 
@@ -113,6 +113,8 @@ impl AddAssign for Vec3 {
 }
 
 impl Vec3 {
+    pub const ZERO: Vec3 = Vec3 { e: [0.0, 0.0, 0.0] };
+
     pub fn new(e0: f32, e1: f32, e2: f32) -> Vec3 {
         Vec3 { e: [e0, e1, e2] }
     }

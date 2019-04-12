@@ -1,15 +1,21 @@
 extern crate rand;
 
-use super::{Vec3, Ray, Hit, Hittable};
-use self::rand::Rng;
+use rand::Rng;
+use crate::{Vec3, Ray, Hit, Hittable};
+use crate::material::Material;
+use core::borrow::Borrow;
 
-#[derive(Debug, Copy, Clone)]
 pub struct Sphere {
     pub center: Vec3,
     pub radius: f32,
+    material: Box<Material>
 }
 
 impl Sphere {
+    pub fn new<T: Material + 'static>(center: Vec3, radius: f32, material: T) -> Sphere {
+        Sphere { center, radius, material: Box::new(material) }
+    }
+
     // 単位円のなかのランダムな座標を返す
     // あてずっぽで座標をつくってチェックする棄却法
     // TODO: 極座標で表現すればループする必要ない
@@ -48,7 +54,7 @@ impl Hittable for Sphere {
         if t_min <= t && t <= t_max {
             let p = ray.point_at(t);
             let normal = (p - self.center).normalized();
-            return Some(Hit { t, p, normal })
+            return Some(Hit { t, p, normal, material: self.material.borrow() })
         }
 
         // 大きい方の解
@@ -56,7 +62,7 @@ impl Hittable for Sphere {
         if t_min <= t && t <= t_max {
             let p = ray.point_at(t);
             let normal = (p - self.center).normalized();
-            return Some(Hit { t, p, normal })
+            return Some(Hit { t, p, normal, material: self.material.borrow() })
         }
 
         None
