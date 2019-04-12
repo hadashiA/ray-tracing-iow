@@ -1,5 +1,5 @@
 use crate::material::{Material, reflect};
-use crate::{Ray, Vec3};
+use crate::{Ray, Vec3, random_in_unit_sphere};
 use crate::hittable::{Hittable, Hit, Sphere};
 use crate::material::Reflection;
 
@@ -19,7 +19,7 @@ impl Material for Metal {
         let reflected = reflect(&ray.direction.normalized(), &hit.normal);
         let scattered = Ray {
             origin: hit.p,
-            direction: reflected + self.fuzziness * Sphere::random_in_unit(),
+            direction: reflected + self.fuzziness * random_in_unit_sphere(),
         };
 
         if Vec3::dot(&reflected, &hit.normal) > 0.0 {

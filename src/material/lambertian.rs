@@ -1,4 +1,4 @@
-use crate::Vec3;
+use crate::{Vec3, random_in_unit_sphere};
 use crate::Ray;
 use crate::hittable::{Hit, Sphere};
 use crate::material::Reflection;
@@ -16,7 +16,7 @@ impl Lambertian {
 
 impl Material for Lambertian {
     fn scatter(&self, ray: &Ray, hit: &Hit) -> Option<Reflection> {
-        let dest = hit.p + hit.normal + Sphere::random_in_unit();
+        let dest = hit.p + hit.normal + random_in_unit_sphere();
         let scattered = Ray {
             origin: hit.p,
             direction: dest - hit.p

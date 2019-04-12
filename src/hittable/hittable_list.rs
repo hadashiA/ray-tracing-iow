@@ -6,8 +6,16 @@ pub struct HittableList {
 }
 
 impl HittableList {
-    pub fn new(hittables: Vec<Box<Hittable>>) -> HittableList {
+    pub fn new() -> HittableList {
+        HittableList { hittables: vec![] }
+    }
+
+    pub fn from_vec(hittables: Vec<Box<Hittable>>) -> HittableList {
         HittableList { hittables }
+    }
+
+    pub fn add<T: Hittable + 'static>(&mut self, hittable: T) {
+        self.hittables.push(Box::new(hittable));
     }
 }
 

@@ -43,28 +43,25 @@ fn main() {
         4.0,
         2.0);
 
-    let world = HittableList::new(vec![
-        Box::new(
-            Sphere::new(
-                Vec3::new(0.0, 0.0, -1.0),
-                0.5,
-                Lambertian::new(Vec3::new(0.8, 0.3, 0.3)))),
-        Box::new(
-            Sphere::new(
-                Vec3::new(0.0, -100.5, -1.0),
-                100.0,
-                Lambertian::new(Vec3::new(0.8, 0.8, 0.0)))),
-        Box::new(
-            Sphere::new(
-                Vec3::new(1.0, 0.0, -1.0),
-                0.5,
-                Metal::new(Vec3::new(0.8, 0.6, 0.2), 0.3))),
-        Box::new(
-            Sphere::new(
-                Vec3::new(-1.0, 0.0, -1.0),
-                0.5,
-                Metal::new(Vec3::new(0.8, 0.8, 0.8), 0.1))),
-    ]);
+    let mut world = HittableList::new();
+    world.add(Sphere::new(
+        Vec3::new(0.0, 0.0, -1.0),
+        0.5,
+        Lambertian::new(Vec3::new(0.8, 0.3, 0.3))));
+    world.add(Sphere::new(
+        Vec3::new(0.0, -100.5, -1.0),
+        100.0,
+        Lambertian::new(Vec3::new(0.8, 0.8, 0.0))));
+    world.add(
+        Sphere::new(
+            Vec3::new(1.0, 0.0, -1.0),
+            0.5,
+            Metal::new(Vec3::new(0.8, 0.6, 0.2), 0.3)));
+    world.add(
+        Sphere::new(
+            Vec3::new(-1.0, 0.0, -1.0),
+            0.5,
+            Metal::new(Vec3::new(0.8, 0.8, 0.8), 0.1)));
 
     println!("P3\n{} {}\n255", w, h);
 
