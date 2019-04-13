@@ -16,7 +16,7 @@ pub use material::*;
 
 // 単位円のなかのランダムな座標を返す
 // あてずっぽで座標をつくってチェックする棄却法
-// TODO: 極座標で表現すればループする必要ない
+// TODO: 極座標表現にしたりしてみる
 pub fn random_in_unit_sphere() -> Vec3 {
     let mut rng = rand::thread_rng();
     loop {

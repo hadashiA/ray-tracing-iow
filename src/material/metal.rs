@@ -1,7 +1,7 @@
 use crate::material::{Material, reflect};
 use crate::{Ray, Vec3, random_in_unit_sphere};
 use crate::hittable::{Hittable, Hit, Sphere};
-use crate::material::Reflection;
+use crate::material::Sample;
 
 pub struct Metal {
     albedo: Vec3,
@@ -15,7 +15,7 @@ impl Metal {
 }
 
 impl Material for Metal {
-    fn scatter(&self, ray: &Ray, hit: &Hit) -> Option<Reflection> {
+    fn sample(&self, ray: &Ray, hit: &Hit) -> Option<Sample> {
         let reflected = reflect(&ray.direction.normalized(), &hit.normal);
         let scattered = Ray {
             origin: hit.p,
@@ -23,7 +23,7 @@ impl Material for Metal {
         };
 
         if Vec3::dot(&reflected, &hit.normal) > 0.0 {
-            Some(Reflection { attenuation: self.albedo, scattered })
+            Some(Sample { attenuation: self.albedo, scattered })
         } else {
             None
         }

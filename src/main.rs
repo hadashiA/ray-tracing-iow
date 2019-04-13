@@ -9,8 +9,8 @@ fn color<T: Hittable>(ray: &Ray, world: &T, count: u32) -> Vec3 {
 
     match hit {
         Some(hit) if count < 50 => {
-            if let Some(reflection) = hit.material.scatter(&ray, &hit) {
-                 reflection.attenuation * color(&reflection.scattered, world, count + 1)
+            if let Some(x) = hit.material.sample(&ray, &hit) {
+                 x.attenuation * color(&x.scattered, world, count + 1)
             } else {
                 Vec3::ZERO
             }
@@ -47,7 +47,7 @@ fn main() {
     world.add(Sphere::new(
         Vec3::new(0.0, 0.0, -1.0),
         0.5,
-        Lambertian::new(Vec3::new(0.8, 0.3, 0.3))));
+        Lambertian::new(Vec3::new(0.1, 0.2, 0.5))));
     world.add(Sphere::new(
         Vec3::new(0.0, -100.5, -1.0),
         100.0,
@@ -56,12 +56,12 @@ fn main() {
         Sphere::new(
             Vec3::new(1.0, 0.0, -1.0),
             0.5,
-            Metal::new(Vec3::new(0.8, 0.6, 0.2), 0.3)));
+            Metal::new(Vec3::new(0.8, 0.6, 0.2), 0.8)));
     world.add(
         Sphere::new(
             Vec3::new(-1.0, 0.0, -1.0),
             0.5,
-            Metal::new(Vec3::new(0.8, 0.8, 0.8), 0.1)));
+            Dielectric::new(1.5)));
 
     println!("P3\n{} {}\n255", w, h);
 
