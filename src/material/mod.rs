@@ -10,7 +10,9 @@ pub use metal::Metal;
 pub use dielectric::Dielectric;
 
 pub fn reflect(v: &Vec3, n: &Vec3) -> Vec3 {
-    *v + -(2.0 * (Vec3::dot(v, n) * *n))
+    let v = v.normalized();
+    let n = *n;
+    v + -(2.0 * (Vec3::dot(&v, &n) * n))
 }
 
 // https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/refract.xhtml
@@ -26,6 +28,12 @@ pub fn refract(v: &Vec3, n: &Vec3, eta: f32) -> Option<Vec3> {
     } else {
         None
     }
+}
+
+pub fn schlick(cosine: f32, refraction_index: f32) -> f32 {
+    let r0 = (1.0 - refraction_index) / (1.0 + refraction_index);
+    let r0 = r0 * r0;
+    r0 + (1.0 - r0) * (1.0 - cosine).powf(5.0)
 }
 
 pub struct Sample {

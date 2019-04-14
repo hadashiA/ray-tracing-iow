@@ -1,6 +1,6 @@
 extern crate rand;
 
-use rand::Rng;
+use rand::{Rng};
 
 mod vec3;
 mod ray;

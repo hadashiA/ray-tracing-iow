@@ -62,6 +62,11 @@ fn main() {
             Vec3::new(-1.0, 0.0, -1.0),
             0.5,
             Dielectric::new(1.5)));
+//    world.add(
+//        Sphere::new(
+//            Vec3::new(-1.0, 0.0, -1.0),
+//            -0.45,
+//            Dielectric::new(1.5)));
 
     println!("P3\n{} {}\n255", w, h);
 

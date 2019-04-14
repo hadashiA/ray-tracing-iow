@@ -16,7 +16,7 @@ impl Metal {
 
 impl Material for Metal {
     fn sample(&self, ray: &Ray, hit: &Hit) -> Option<Sample> {
-        let reflected = reflect(&ray.direction.normalized(), &hit.normal);
+        let reflected = reflect(&ray.direction, &hit.normal);
         let scattered = Ray {
             origin: hit.p,
             direction: reflected + self.fuzziness * random_in_unit_sphere(),
