@@ -37,12 +37,18 @@ fn main() {
 
     let mut rng = rand::thread_rng();
 
+    let look_from = Vec3::new(3.0, 3.0, 2.0);
+    let look_at = Vec3::new(0.0, 0.0, -1.0);
+    let dist_to_focus = (look_from - look_at).length();
+
     let camera = Camera::new(
-        Vec3::new(-2.0, 2.0, 1.0),
-    Vec3::new(0.0, 0.0, 0.0),
+        look_from,
+    look_at,
     Vec3::new(0.0, 1.0, 0.0),
-    90.0,
-    w as f32 / h as f32);
+    20.0,
+    w as f32 / h as f32,
+    2.0,
+    dist_to_focus);
 
     let mut world = HittableList::new();
     world.add(Sphere::new(

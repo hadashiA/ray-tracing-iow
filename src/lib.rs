@@ -30,3 +30,13 @@ pub fn random_in_unit_sphere() -> Vec3 {
         }
     }
 }
+
+pub fn random_in_unit_disc() -> Vec3 {
+    let mut rng = rand::thread_rng();
+    loop {
+        let p = Vec3::new(rng.gen(), rng.gen(), 0.0);
+        if p.length_squared() <= 1.0 {
+            return p;
+        }
+    }
+}
