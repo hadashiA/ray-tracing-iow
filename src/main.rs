@@ -30,6 +30,76 @@ fn color<T: Hittable>(ray: &Ray, world: &T, count: u32) -> Vec3 {
     }
 }
 
+fn random_scene() -> impl Hittable {
+    let mut world = HittableList::new();
+    let mut rng = rand::thread_rng();
+
+    // 地面
+    world.add(Sphere::new(
+        Vec3::new(0.0, -1000.0, 0.0),
+        1000.0,
+        Lambertian::new(Vec3::new(0.5, 0.5, 0.5))));
+
+    let p1 = Vec3::new(4.0, 0.2, 0.0);
+
+    for col in -11..11 {
+        for row in -11..11 {
+            let center = Vec3::new(
+                col as f32 + 0.9 * rng.gen::<f32>(),
+                0.2,
+                row as f32 + 0.8 * rng.gen::<f32>());
+
+            if (center - p1).length() > 0.9 {
+                match rng.gen::<f32>() {
+                    x if x < 0.8 => {
+                        // diffuse
+                        let material = Lambertian::new(
+                            Vec3::new(
+                                rng.gen::<f32>() * rng.gen::<f32>(),
+                                rng.gen::<f32>() * rng.gen::<f32>(),
+                                rng.gen::<f32>() * rng.gen::<f32>()));
+                        world.add(Sphere::new(center, 0.2, material));
+                    },
+                    x if x < 0.95 => {
+                        // metal
+                        let material = Metal::new(
+                            Vec3::new(
+                                0.5 * (1.0 + rng.gen::<f32>()),
+                                0.5 * (1.0 + rng.gen::<f32>()),
+                                0.5 * (1.0 + rng.gen::<f32>())),
+                            0.5 * rng.gen::<f32>());
+                        world.add(Sphere::new(center, 0.2, material));
+                    },
+                    _ => {
+                        // glass
+                        let material = Dielectric::new(1.5);
+                        world.add(Sphere::new(center, 0.2, material));
+                    }
+                }
+            }
+        }
+    }
+
+    world.add(Sphere::new(
+       Vec3::new(0.0, 1.0, 0.0),
+       1.0,
+        Dielectric::new(1.5)
+    ));
+
+    world.add(Sphere::new(
+        Vec3::new(-4.0, 1.0, 0.0),
+        1.0,
+        Lambertian::new(Vec3::new(0.4, 0.2, 0.1))
+    ));
+
+    world.add(Sphere::new(
+        Vec3::new(4.0, 1.0, 0.0),
+        1.0,
+        Metal::new(Vec3::new(0.7, 0.6, 0.5), 0.0)));
+
+    world
+}
+
 fn main() {
     let w = 400;
     let h = 200;
@@ -50,30 +120,7 @@ fn main() {
     2.0,
     dist_to_focus);
 
-    let mut world = HittableList::new();
-    world.add(Sphere::new(
-        Vec3::new(0.0, 0.0, -1.0),
-        0.5,
-        Lambertian::new(Vec3::new(0.1, 0.2, 0.5))));
-    world.add(Sphere::new(
-        Vec3::new(0.0, -100.5, -1.0),
-        100.0,
-        Lambertian::new(Vec3::new(0.8, 0.8, 0.0))));
-    world.add(
-        Sphere::new(
-            Vec3::new(1.0, 0.0, -1.0),
-            0.5,
-            Metal::new(Vec3::new(0.8, 0.6, 0.2), 0.8)));
-    world.add(
-        Sphere::new(
-            Vec3::new(-1.0, 0.0, -1.0),
-            0.5,
-            Dielectric::new(1.5)));
-    world.add(
-        Sphere::new(
-            Vec3::new(-1.0, 0.0, -1.0),
-            -0.45,
-            Dielectric::new(1.5)));
+    let world = random_scene();
 
     println!("P3\n{} {}\n255", w, h);
 
